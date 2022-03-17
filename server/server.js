@@ -8,7 +8,18 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, "../public")));
 
-let colors = [];
+// include and initialize the rollbar library with your access token
+var Rollbar = require('rollbar')
+var rollbar = new Rollbar({
+  accessToken: '45e92472aee24387958aeac244fa6fe4',
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+})
+
+// record a generic message and send it to Rollbar
+rollbar.log('Hello world!')
+
+let colors = ['orange', 'purple', 'black'];
 
 app.get('/color', (req, res) => {
     rollbar.info("Colors recieved")

@@ -2,25 +2,25 @@
 const baseURL = 'http://localhost:4050';
 
 let submitBtn = document.getElementById("submitBtn");
-let colorSelection = document.getElementById("colorSelection");
+let colorSelections = document.querySelectorAll("input[name = colorSelection]");
+const container = document.querySelector('section');
 
 function displayRainbow(res){
     container.innerHTML = ''
-    nameInput.value = ''
 
             res.data.forEach((color, index) => {
                 container.innerHTML += `<div name=${index}>${color}</div>`
-                container.style.backgroundColor = color;
             })
 
             document.querySelectorAll('div').forEach(element => {
                 const theIndexValue = element.getAttribute('name');
+                element.style.backgroundColor = element.textContent;
 
                 element.addEventListener('click', () => {
                     axios
                         .delete(`/color/${theIndexValue}`)
                         .then(res => {
-                            putTheThingInTheView(res)
+                            displayRainbow(res)
                         })
 
                 })
@@ -31,7 +31,14 @@ function displayRainbow(res){
 
 
 function addColor(colorSelection){
-    axios.post(`/color`, { color: colorSelection.value} )
+    let newColor;
+    for (const colorSelection of colorSelections) {
+        if (colorSelection.checked) {
+            newColor = colorSelection.value;
+            break;
+        }
+    }
+    axios.post(`/color`, { color: newColor} )
     .then(res => {
         displayRainbow(res)
     })
@@ -51,10 +58,10 @@ function addColor(colorSelection){
     })
 }
 
-axios.get('/color')
+axios.get(`/color`)
 .then(res => {
     displayRainbow(res)
 })
 
 
-submitBtn.addEventListener('click', addColor)
+submitBtn.addEventListener('click', addColor);
